@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Kapogeee X One-Time Key Generator</title>
+  <!-- Google Font -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+  <!-- Custom Branding Styles -->
+  <style>
+    :root {
+      --primary: #007acc;
+      --secondary: #005f99;
+      --accent: #ff6a00;
+      --bg: #f4f6f8;
+      --card-bg: #ffffff;
+      --text: #333333;
+      --muted: #666666;
+    }
+    [data-theme="dark"] {
+      --bg: #1e1e2f;
+      --card-bg: #2b2b3f;
+      --text: #e0e0e0;
+      --muted: #a0a0b0;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+    }
+    header {
+      background: var(--card-bg);
+      padding: 1rem 2rem;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+    header h1 {
+      font-size: 1.5rem;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    header img.logo {
+      height: 32px;
+      width: 32px;
+    }
+    #theme-toggle {
+      background: none;
+      border: none;
+      font-size: 1.2rem;
+      cursor: pointer;
+      color: var(--text);
+    }
+    main {
+      flex: 1;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 2rem;
+      padding: 2rem;
+    }
+    .card {
+      background: var(--card-bg);
+      border-radius: 8px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+      padding: 1.5rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+    .card h2 {
+      font-size: 1.25rem;
+      margin-bottom: 0.5rem;
+      color: var(--accent);
+    }
+    .form-row {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+    }
+    .form-row input[type="number"] {
+      flex: 1;
+      padding: 0.5rem;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      font-size: 1rem;
+    }
+    .presets {
+      display: flex;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+    }
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0.6rem 1.2rem;
+      font-size: 1rem;
+      font-weight: 600;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      background: var(--primary);
+      color: #fff;
+      transition: background 0.3s;
+    }
+    .btn:hover { background: var(--secondary); }
+    .accent-btn { background: var(--accent); }
+    .accent-btn:hover { background: #e65c00; }
+    #current-key { 
+      word-break: break-all; 
+      font-family: 'Courier New', monospace; 
+      background: #f0f4ff; 
+      padding: 1rem; 
+      border-radius: 4px; 
+      position: relative; 
+    }
+    #copy-btn { 
+      position: absolute; 
+      top: 0.75rem; 
+      right: 0.75rem; 
+      background: var(--secondary); 
+      border: none; 
+      padding: 0.3rem 0.6rem; 
+      border-radius: 4px; 
+      color: #fff; 
+      font-size: 0.9rem; 
+      cursor: pointer; 
+    }
+    .controls { 
+      display: flex; 
+      gap: 0.5rem; 
+      align-items: center; 
+      flex-wrap: wrap; 
+    }
+    .search { 
+      flex: 1; 
+      padding: 0.5rem; 
+      border: 1px solid #ccc; 
+      border-radius: 4px; 
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.95rem;
+    }
+    th, td {
+      padding: 0.75rem;
+      border-bottom: 1px solid #ddd;
+      text-align: left;
+    }
+    th {
+      background: var(--bg);
+      font-weight: 600;
+    }
+    #clear-history {
+      align-self: flex-end;
+      background: #e74c3c;
+    }
+    @media (max-width: 600px) {
+      header, main { padding: 1rem; }
+      .form-row, .controls { flex-direction: column; align-items: flex-start; }
+      #theme-toggle { margin-top: 0.5rem; }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1><img src="logo.png" alt="Kapogeee X" class="logo">Kapogeee X Key Generator</h1>
+    <button id="theme-toggle">🌙</button>
+  </header>
+  <main>
+    <section class="card">
+      <h2>Generate New Key</h2>
+      <div class="form-row">
+        <label for="expiry">Expires in (min):</label>
+        <input type="number" id="expiry" value="60" min="1" />
+      </div>
+      <div class="presets">
+        <button class="btn accent-btn" data-mins="15">15m</button>
+        <button class="btn accent-btn" data-mins="30">30m</button>
+        <button class="btn accent-btn" data-mins="60">1h</button>
+        <button class="btn accent-btn" data-mins="240">4h</button>
+      </div>
+      <button id="generate" class="btn">Generate Key</button>
+      <div id="current-key" style="display:none;">
+        <button id="copy-btn">Copy</button>
+        <p id="key"></p>
+        <small id="expire-info" style="color: var(--muted);"></small>
+      </div>
+    </section>
+    <section class="card">
+      <div class="controls">
+        <h2 style="flex:none;">Key History</h2>
+        <input type="text" id="search" class="search" placeholder="Search or filter" />
+        <label><input type="checkbox" id="show-active" checked /> Active only</label>
+      </div>
+      <table>
+        <thead>
+          <tr><th>Key</th><th>Expires At</th></tr>
+        </thead>
+        <tbody id="history-body"></tbody>
+      </table>
+      <button id="clear-history" class="btn">Clear History</button>
+      <div class="controls">
+        <button id="export-csv" class="btn">Export CSV</button>
+        <button id="export-json" class="btn">Export JSON</button>
+      </div>
+    </section>
+  </main>
+  <script>
+    // Theme toggle
+    const themeToggle = document.getElementById('theme-toggle');
+    const root = document.documentElement;
+    function setTheme(theme) {
+      root.setAttribute('data-theme', theme);
+      themeToggle.textContent = theme === 'light' ? '🌙' : '☀️';
+      localStorage.setItem('theme', theme);
+    }
+    themeToggle.addEventListener('click', () => setTheme(root.getAttribute('data-theme') === 'light' ? 'dark' : 'light'));
+    setTheme(localStorage.getItem('theme') || 'light');
+
+    // Generate key
+    function generateKey(len=32){const a=new Uint8Array(len/2);crypto.getRandomValues(a);return Array.from(a,x=>x.toString(16).padStart(2,'0')).join('');}
+    let history = JSON.parse(localStorage.getItem('keyHistory')||'[]');
+
+    // UI elements
+    const expiryInput = document.getElementById('expiry');
+    document.querySelectorAll('.presets button').forEach(b=>b.onclick=()=>expiryInput.value=b.dataset.mins);
+    document.getElementById('generate').onclick=()=>{
+      const mins=+expiryInput.value; const key=generateKey(); const expires=Date.now()+mins*60000;
+      document.getElementById('key').textContent=key;
+      document.getElementById('expire-info').textContent=`Expires at: ${new Date(expires).toLocaleString()}`;
+      document.getElementById('current-key').style.display='block';
+      history.unshift({key,expires}); localStorage.setItem('keyHistory',JSON.stringify(history)); renderHistory();
+      // Server-side stub
+      fetch('https://kapogeeex-keygen.vercel.app/keys', {method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({key,expires})});
+    };
+    document.getElementById('copy-btn').onclick=()=>navigator.clipboard.writeText(document.getElementById('key').textContent);
+
+    // Rendering & filtering
+    const tbody=document.getElementById('history-body'); const searchInput=document.getElementById('search'); const activeChk=document.getElementById('show-active');
+    function renderHistory(){
+      tbody.innerHTML=''; const term=searchInput.value.toLowerCase(); const now=Date.now();
+      history.forEach(({key,expires})=>{
+        const active=expires>now;
+        if(activeChk.checked && !active) return;
+        if(term && !key.includes(term)) return;
+        const tr=document.createElement('tr'); const date=new Date(expires).toLocaleString();
+        tr.innerHTML=`<td style="word-break:break-all;">${key}</td><td>${date}${active?'':' (expired)'}</td>`;
+        tbody.appendChild(tr);
+      });
+    }
+    searchInput.oninput=renderHistory; activeChk.onchange=renderHistory;
+    document.getElementById('clear-history').onclick=()=>{history=[];localStorage.removeItem('keyHistory');renderHistory();};
+
+    // Export
+    document.getElementById('export-csv').onclick=()=>{
+      const rows=[['Key','Expires At']]; history.forEach(({key,expires})=>rows.push([key,new Date(expires).toISOString()]));
+      const csv=rows.map(r=>r.map(v=>`"${v}"`).join(',')).join('\n');
+      const blob=new Blob([csv],{type:'text/csv'}); const url=URL.createObjectURL(blob);
+      const a=document.createElement('a');a.href=url;a.download='keys.csv';a.click(); URL.revokeObjectURL(url);
+    };
+    document.getElementById('export-json').onclick=()=>{
+      const blob=new Blob([JSON.stringify(history,null,2)],{type:'application/json'});
+      const url=URL.createObjectURL(blob); const a=document.createElement('a');a.href=url;a.download='keys.json';a.click(); URL.revokeObjectURL(url);
+    };
+
+    // Initial render
+    renderHistory();
+  </script>
+</body>
+</html>
